@@ -100,6 +100,7 @@ template <typename T> class ArrayList {
             this->tab[0] = item;
         } else {
             // TODO resize or throw error
+            throw std::out_of_range("Not enough capacity");
         }
     } // dodanie na poczatek
 
@@ -110,6 +111,7 @@ template <typename T> class ArrayList {
             this->tab[0] = std::move(item);
         } else {
             // TODO resize or throw error
+            throw std::out_of_range("Not enough capacity");
         }
     } // dodanie na poczatek NIEOBOWIAZKOWE
 
@@ -186,6 +188,7 @@ template <typename T> class ArrayList {
 
     void
     merge(ArrayList& other); //  merges two sorted lists into one NIEOBOWIAZKOWE
+    // TODO do dodania w wolnej chwili
 
     // Operacje z indeksami. NIEOBOWIAZKOWE
     // https://en.cppreference.com/w/cpp/language/operators
@@ -198,10 +201,10 @@ template <typename T> class ArrayList {
     } // podstawienie L[pos]=item, odczyt L[pos]
 
     const T& operator[](std::size_t pos) const {
-        if (pos < this->msize) {
-            return this->tab[pos];
+        if (pos >= this->msize) {
+            throw std::out_of_range("Invalid list position");
         }
-        throw std::out_of_range("Invalid list position");
+        return this->tab[pos];
     } // dostep do obiektu const
 
     void erase(std::size_t pos) {
