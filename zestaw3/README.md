@@ -25,7 +25,7 @@ Katalog src:
 make run # uruchomienie programu z testami
 ```
 
-# Jak zkompilowąć
+# Jak zkompilować
 
 ```bash
 make

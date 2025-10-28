@@ -1,7 +1,6 @@
 #include "arraylist.hpp"
 #include <cassert>
 #include <exception>
-#include <iostream>
 
 /// Test [] operator
 void acces_op_test() {
@@ -329,18 +328,6 @@ auto main() -> int {
     reverse_test();
     erase_test();
     index_test();
-
-    // SOME OTHER THINGS
-    ArrayList<int> l = ArrayList<int>(10);
-    l.push_back(10);
-    l.push_back(11);
-    l.push_back(12);
-    // std::cout << l << std::endl;
-    ArrayList<int> l2 = l;
-    l.push_back(13);
-    // l2.push_back(14);
-    // std::cout << l << std::endl;
-    // std::cout << l2 << std::endl;
 
     return 0;
 }
