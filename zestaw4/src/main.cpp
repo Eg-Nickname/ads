@@ -61,6 +61,13 @@ void assign_op_test() {
     SingleList<int32_t> l3 = std::move(l2);
     assert(l3 != l2);
     assert(l2.size() == 0);
+
+    // Added after 04-11-2025
+    // Test for freeing memory
+    SingleList<int32_t> l4 = gen_list();
+    l4.push_back(66);
+    l4 = SingleList<int32_t>();
+    assert(l4.size() == 0);
 }
 
 /// Get head.value of list

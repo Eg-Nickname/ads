@@ -197,6 +197,9 @@ SingleList<T>::SingleList(SingleList&& other)
 template <typename T>
 SingleList<T>& SingleList<T>::operator=(const SingleList& other) {
     if (this != &other) {
+        // Added after 04-11-2025
+        this->clear(); // We have to free our memory
+
         SingleNode<T>* copied_node = other.head;
         while (copied_node != nullptr) {
             this->push_back(copied_node->value);
