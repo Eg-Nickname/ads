@@ -1,6 +1,8 @@
 #include "vector_deque.hpp"
 #include <cassert>
 #include <iostream>
+#include <sstream> // display tests
+
 MyVecDeque<int32_t> gen_deque() {
     // User facing deque: 9 - 10 - 11 - 12 - 13
     // Internal: 11 -> 12 -> 13  0  0  0  0  9 -> 10 ->
@@ -181,11 +183,41 @@ void clear_test() {
 }
 
 void display_test() {
-    // TODO
+    auto vd = gen_deque();
+
+    // From https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf.html
+    std::ostringstream local;
+    auto cout_buff = std::cout.rdbuf(); // save pointer std::cout buffers
+    std::cout.rdbuf(local.rdbuf());
+
+    // DISPLAY TEXT
+    vd.display();
+
+    // Restore cout
+    std::cout.rdbuf(cout_buff);
+
+    // Check display
+    // std::cout << local.str() << std::endl;
+    assert(local.str() == "9 - 10 - 11 - 12 - 13\n");
 }
 
 void display_reversed_test() {
-    // TODO
+    auto vd = gen_deque();
+
+    // From https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf.html
+    std::ostringstream local;
+    auto cout_buff = std::cout.rdbuf(); // save pointer std::cout buffers
+    std::cout.rdbuf(local.rdbuf());
+
+    // DISPLAY TEXT
+    vd.display_reversed();
+
+    // Restore cout
+    std::cout.rdbuf(cout_buff);
+
+    // Check display
+    // std::cout << local.str() << std::endl;
+    assert(local.str() == "13 - 12 - 11 - 10 - 9\n");
 }
 
 void erase_test() {
@@ -215,7 +247,19 @@ void index_test() {
 }
 
 void insert_test() {
-    // TODO
+    // User facing deque: 9 - 10 - 11 - 12 - 13
+    auto vd = gen_deque();
+    assert(vd[0] == 9);
+    vd.insert(0, 20);
+    assert(vd[1] == 9);
+    assert(vd[0] == 20);
+    // User facing deque: 20 - 9 - 10 - 11 - 12 - 13
+    vd.insert(5, 21);
+    assert(vd[5] == 21);
+    assert(vd[6] == 13);
+    vd.insert(7, 23);
+    assert(vd[6] == 13);
+    assert(vd[7] == 23);
 }
 
 auto main() -> int {

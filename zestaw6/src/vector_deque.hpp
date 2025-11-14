@@ -11,9 +11,9 @@
 template <typename T>
 class MyVecDeque {
     private:
-    std::vector<T> vecdeq;
     std::size_t head;
     std::size_t tail;
+    std::vector<T> vecdeq;
 
     public:
     MyVecDeque();
@@ -199,12 +199,24 @@ void MyVecDeque<T>::clear() {
 
 template <typename T>
 void MyVecDeque<T>::display() {
-    // TODO
+    for (std::size_t i = 0; i < this->size(); i++) {
+        std::cout << this->index_at(i);
+        if (i != this->size() - 1) {
+            std::cout << " - ";
+        }
+    }
+    std::cout << std::endl;
 }
 
 template <typename T>
 void MyVecDeque<T>::display_reversed() {
-    // TODO
+    for (std::size_t i = 0; i < this->size(); i++) {
+        std::cout << this->index_at(this->size() - 1 - i);
+        if (i != this->size() - 1) {
+            std::cout << " - ";
+        }
+    }
+    std::cout << std::endl;
 }
 
 template <typename T>
@@ -261,12 +273,17 @@ int MyVecDeque<T>::index(const T& item) {
     return -1;
 }
 
+// FIX: There could still be some wierd edge case not included
 template <typename T>
 void MyVecDeque<T>::insert(std::size_t pos, const T& item) {
+    if (pos == this->size()) {
+        this->push_back(item);
+        return;
+    }
     if (this->full()) {
         this->resize();
     }
-    // TODO work out edge cases and moving
+    // FIX: Works correctly but could move less elements in specific edgecasess
     std::size_t internal_pos = (this->head + pos) % this->vecdeq.size();
     if (internal_pos < tail && tail + 1 != this->vecdeq.size()) {
         std::copy_backward(this->vecdeq.begin() + internal_pos,
@@ -274,6 +291,7 @@ void MyVecDeque<T>::insert(std::size_t pos, const T& item) {
                            this->vecdeq.begin() + this->tail + 1);
         this->tail =
             (this->tail + this->vecdeq.size() + 1) % this->vecdeq.size();
+        this->index_at(pos) = item;
     } else {
         // if pos > head we copy head to internal pos
         std::copy(this->vecdeq.begin() + this->head,
@@ -282,11 +300,40 @@ void MyVecDeque<T>::insert(std::size_t pos, const T& item) {
 
         this->head =
             (this->head + this->vecdeq.size() - 1) % this->vecdeq.size();
+        this->index_at(pos) = item;
     }
 }
 
+// FIX: There could still be some wierd edge case not included
 template <typename T>
-void MyVecDeque<T>::insert(std::size_t pos, T&& item) {}
+void MyVecDeque<T>::insert(std::size_t pos, T&& item) {
+    if (pos == this->size()) {
+        this->push_back(std::move(item));
+        return;
+    }
+    if (this->full()) {
+        this->resize();
+    }
+    // FIX: Works correctly but could move less elements in specific edgecasess
+    std::size_t internal_pos = (this->head + pos) % this->vecdeq.size();
+    if (internal_pos < tail && tail + 1 != this->vecdeq.size()) {
+        std::copy_backward(this->vecdeq.begin() + internal_pos,
+                           this->vecdeq.begin() + this->tail,
+                           this->vecdeq.begin() + this->tail + 1);
+        this->tail =
+            (this->tail + this->vecdeq.size() + 1) % this->vecdeq.size();
+        this->index_at(pos) = std::move(item);
+    } else {
+        // if pos > head we copy head to internal pos
+        std::copy(this->vecdeq.begin() + this->head,
+                  this->vecdeq.begin() + internal_pos,
+                  this->vecdeq.begin() - 1);
+
+        this->head =
+            (this->head + this->vecdeq.size() - 1) % this->vecdeq.size();
+        this->index_at(pos) = std::move(item);
+    }
+}
 
 template <typename T>
 void MyVecDeque<T>::resize() {
