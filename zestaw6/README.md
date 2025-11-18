@@ -17,7 +17,7 @@ Katalog src:
 
 # Do czego służy
 
-- main.x - Testuje implementacje deque na bazie listy podwójnie powiązanej
+- main.x - Testuje implementacje deque na bazie tablicy oz miennej długości
 
 # Jak uruchomić program
 
