@@ -34,7 +34,7 @@ class MyQueue {
     void pop();                 // usuwa początek kolejki, pop_front()
     void clear();               // czyszczenie listy z elementów
 
-    // Cant do in stack implementation
+    // Cant do in stack implementation without additional stack
     void display();
 };
 
@@ -142,9 +142,31 @@ void MyQueue<T>::clear() {
     }
 }
 
-// Cant do in stack implementation
-// template <typename T>
-// void MyQueue<T>::display() {}
+template <typename T>
+void MyQueue<T>::display() {
+    if (this->empty()) {
+        std::cout << "Empty queue!" << std::endl;
+        return;
+    }
+    std::stack<T> temp;
+    // Empty queue to temp stack and then display it in reverse
+    while (!this->empty()) {
+        temp.push(this->front());
+        this->pop();
+    }
+    // Put back all item into queue
+    // We have to maintain one item in input stack to to provide .back() method
+    std::cout << temp.top() << "->";
+    this->input.push(temp.top());
+    temp.pop();
+    // Rest of items go to output stack for correct order
+    while (!temp.empty()) {
+        std::cout << temp.top() << "->";
+        this->output.push(temp.top());
+        temp.pop();
+    }
+    std::cout << std::endl;
+}
 
 template <typename T>
 void MyQueue<T>::stack_pour() {

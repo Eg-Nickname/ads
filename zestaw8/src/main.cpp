@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <sstream> // display tests
 #include <string>
 
 #include "queue.hpp"
@@ -180,6 +181,35 @@ void clear_test() {
     assert(q.empty());
 }
 
+void display_test() {
+    auto q = MyQueue<uint32_t>();
+    q.push(64);
+    q.push(32);
+    q.push(16);
+    q.pop();
+    q.push(8);
+
+    // From https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf.html
+    std::ostringstream local;
+    auto cout_buff = std::cout.rdbuf(); // save pointer std::cout buffers
+    std::cout.rdbuf(local.rdbuf());
+
+    // DISPLAY TEXT
+    q.display();
+
+    // Restore cout
+    std::cout.rdbuf(cout_buff);
+
+    // Check display
+    std::cout << local.str();
+    assert(local.str() == "8->16->32->\n");
+    // Check if order of elements in queue after display is corrects
+    assert(q.back() == 8);
+    assert(q.front() == 32);
+    q.pop();
+    assert(q.front() == 16);
+}
+
 auto main() -> int {
     pour_push_pop_test();
     constructor_test();
@@ -191,6 +221,7 @@ auto main() -> int {
     back_test();
     pop_test();
     clear_test();
+    display_test();
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
