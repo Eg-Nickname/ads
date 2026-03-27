@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(Simple CXX)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# file(GLOB SOURCES "src/*.cpp")
+
+set(list_files "src/list_set_test.cpp" "src/list_set.cpp")
+set(string_files "src/string_set.cpp" )
+
+add_executable(list_set_tests ${list_files})
+add_executable(string_set_tests ${string_files})
+
+target_compile_options(list_set_tests PRIVATE
+    -pedantic
+    -Wall          
+    -Wextra            
+    -Werror
+    # -O3            
+    -march=native
+)
+
+target_compile_options(string_set_tests PRIVATE
+    -pedantic
+    -Wall          
+    -Wextra            
+    -Werror
+    # -O3            
+    -march=native
+)

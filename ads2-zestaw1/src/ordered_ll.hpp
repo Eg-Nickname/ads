@@ -1,16 +1,15 @@
-// singlelist.h
-
-#ifndef SINGLELIST_H
-#define SINGLELIST_H
+#ifndef OrderedList_H
+#define OrderedList_H
 
 #include <cassert> // assert()
+#include <concepts>
 #include <cstddef>
 #include <iostream> // deklaracje strumieni cout, cin, cerr
 #include <stdexcept>
 
-template <typename T>
+// Ensure our inner type is comparable
+template <std::totally_ordered T>
 struct OrderedNode {
-    // the default access mode and default inheritance mode are public
     T value;
     OrderedNode* next;
     OrderedNode() : value(T()), next(nullptr) {} // konstruktor domyslny
@@ -21,85 +20,84 @@ struct OrderedNode {
     ~OrderedNode() {} // destruktor
 };
 
-template <typename T>
-class SingleList {
+template <std::totally_ordered T>
+class OrderedList {
     OrderedNode<T>*head, *tail;
     std::size_t length;
 
     public:
-    SingleList() : head(nullptr), tail(nullptr), length(0) {}
-    ~SingleList(); // tu trzeba wyczyscic wezly
+    OrderedList() : head(nullptr), tail(nullptr), length(0) {}
+    ~OrderedList(); // tu trzeba wyczyscic wezly
 
-    SingleList(const SingleList& other); // copy constructor
-    // usage:   SingleList<int> list2(list1);
+    OrderedList(const OrderedList& other); // copy constructor
+    // usage:   OrderedList<int> list2(list1);
 
-    SingleList(SingleList&& other); // move constructor NIEOBOWIAZKOWE
-    // usage:   SingleList<int> list2(std::move(list1));
+    OrderedList(OrderedList&& other); // move constructor NIEOBOWIAZKOWE
+    // usage:   OrderedList<int> list2(std::move(list1));
 
-    SingleList& operator=(
-        const SingleList& other); // copy assignment operator, return *this
+    OrderedList& operator=(
+        const OrderedList& other); // copy assignment operator, return *this
     // usage:   list2 = list1;
 
-    SingleList&
-    operator=(SingleList&& other); // move assignment operator, return *this
+    OrderedList&
+    operator=(OrderedList&& other); // move assignment operator, return *this
     // usage:   list2 = std::move(list1); NIEOBOWIAZKOWE
 
     bool empty() const { return head == nullptr; }
-    std::size_t size() const;       // O(n) bo trzeba policzyc
-    void push_front(const T& item); // O(1), L.push_front(item)
-    void
-    push_front(T&& item); // O(1), L.push_front(std::move(item)) NIEOBOWIAZKOWE
-    void push_back(const T& item); // O(1), L.push_back(item)
-    void
-    push_back(T&& item); // O(1), L.push_back(std::move(item)) NIEOBOWIAZKOWE
+    std::size_t size() const; // O(n) bo trzeba policzyc
 
-    // Nullptr deref for empty list!
     // T& front() const { return head->value; } // zwraca poczatek, nie usuwa
 
     /// Fixed version
     T& front() const {
-        // ALTERNATIVE:
-        // assert(!this->empty())
         if (head) {
             return head->value;
         }
         throw std::out_of_range("Trying to get from from empty list");
-    } // zwraca poczatek, nie usuwa
+    }
 
-    // Nullptr deref for empty list!
-    // T& back() const { return tail->value; } // zwraca koniec, nie usuwa
     T& back() const {
-        // ALTERNATIVE:
         // assert(!this->empty())
         if (tail) {
             return tail->value;
         }
         throw std::out_of_range(
             "Trying to get last element from from empty list");
-    } // zwraca poczatek, nie usuwa
+    }
 
-    void pop_front();     // usuwa poczatek O(1)
-    void pop_back();      // usuwa koniec O(n)
+    // void pop_back();      // usuwa koniec O(n)
     void clear();         // czyszczenie listy z elementow O(n)
     void display() const; // O(n)
     void reverse();       // O(n) NIEOBOWIAZKOWE
 
-    // Operacje z indeksami. NIEOBOWIAZKOWE
     T& operator[](std::size_t pos); // podstawienie L[pos]=item, odczyt L[pos]
     const T& operator[](std::size_t pos) const; // dostep do obiektu const
-    void erase(std::size_t pos);
+
     int index(const T& item); // jaki index na liscie (-1 gdy nie ma) O(n)
-    void insert(std::size_t pos, const T& item); // inserts item before pos,
-    void insert(std::size_t pos, T&& item);      // inserts item before pos,
-    // Jezeli pos=0, to wstawiamy na poczatek.
-    // Jezeli pos=size(), to wstawiamy na koniec.
 
     bool operator==(
-        const SingleList& rhs) const; // used for assertions if lists are equal
+        const OrderedList& rhs) const; // used for assertions if lists are equal
+
+    void insert(const T& item); // add element to list
+    void erase(const T& item);  // remove element from list
+    bool contains(const T& item) const;
+    OrderedNode<T>* get_head() const;
+    void push_back(const T& item);
+    void push_back(T&& item);
+
+    // Inner class interface
+    private:
+    void erase_pos(std::size_t pos);             // Good
+    void insert(std::size_t pos, const T& item); // inserts item before pos,
+    void insert(std::size_t pos, T&& item);      // inserts item before pos,
+    void pop_front();                            // usuwa poczatek O(1)
+    size_t find_first_bigger(const T& item);     // returns pos element
+    void push_front(const T& item);              // O(1)
+    void push_front(T&& item);                   // O(1)
 };
 
-template <typename T>
-SingleList<T>::~SingleList() {
+template <std::totally_ordered T>
+OrderedList<T>::~OrderedList() {
     // I sposob.
     for (OrderedNode<T>* node; !empty();) {
         node = head->next; // zapamietujemy
@@ -110,8 +108,8 @@ SingleList<T>::~SingleList() {
     // while (!empty()) { pop_front(); }
 }
 
-template <typename T>
-void SingleList<T>::push_front(const T& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::push_front(const T& item) {
     this->length += 1;
     if (!empty()) {
         head = new OrderedNode<T>(item, head);
@@ -120,8 +118,8 @@ void SingleList<T>::push_front(const T& item) {
     }
 }
 
-template <typename T>
-void SingleList<T>::push_back(const T& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::push_back(const T& item) {
     this->length += 1;
     if (!empty()) {
         tail->next = new OrderedNode<T>(item);
@@ -131,8 +129,8 @@ void SingleList<T>::push_back(const T& item) {
     }
 }
 
-template <typename T>
-void SingleList<T>::display() const {
+template <std::totally_ordered T>
+void OrderedList<T>::display() const {
     OrderedNode<T>* node = head;
     while (node != nullptr) {
         std::cout << node->value << " ";
@@ -141,58 +139,57 @@ void SingleList<T>::display() const {
     std::cout << std::endl;
 }
 
-template <typename T>
-void SingleList<T>::pop_front() {
+template <std::totally_ordered T>
+void OrderedList<T>::pop_front() {
     assert(!empty());
     this->length -= 1;
-    OrderedNode<T>* node = head; // zapamietujemy
-    if (head == tail) {          // jeden wezel na liscie
+    OrderedNode<T>* node = head;
+    if (head == tail) {
         head = tail = nullptr;
-    } else { // wiecej niz jeden wezel na liscie
+    } else {
         head = head->next;
     }
     delete node;
 }
 
-template <typename T>
-void SingleList<T>::pop_back() {
-    assert(!empty());
-    this->length -= 1;
-    OrderedNode<T>* node = tail; // zapamietujemy
-    if (head == tail) {          // jeden wezel na liscie
-        head = tail = nullptr;
-    } else { // wiecej niz jeden wezel na liscie
-        // Szukamy poprzednika ogona.
-        OrderedNode<T>* before = head;
-        while (before->next != tail) {
-            before = before->next;
-        }
-        tail = before;
-        tail->next = nullptr;
-    }
-    delete node;
-}
+// template <std::totally_ordered T>
+// void OrderedList<T>::pop_back() {
+//     assert(!empty());
+//     this->length -= 1;
+//     OrderedNode<T>* node = tail; // zapamietujemy
+//     if (head == tail) {          // jeden wezel na liscie
+//         head = tail = nullptr;
+//     } else { // wiecej niz jeden wezel na liscie
+//         // Szukamy poprzednika ogona.
+//         OrderedNode<T>* before = head;
+//         while (before->next != tail) {
+//             before = before->next;
+//         }
+//         tail = before;
+//         tail->next = nullptr;
+//     }
+//     delete node;
+// }
 
-template <typename T>
-void SingleList<T>::clear() {
+template <std::totally_ordered T>
+void OrderedList<T>::clear() {
     while (!this->empty()) {
         this->pop_front();
     }
-} // czyszczenie listy z elementow O(n)
+}
 
-template <typename T>
-SingleList<T>::SingleList(const SingleList& other)
+template <std::totally_ordered T>
+OrderedList<T>::OrderedList(const OrderedList& other)
     : head(nullptr), tail(nullptr), length(0) {
     OrderedNode<T>* node = other.head;
     while (node != nullptr) {
         this->push_back(node->value);
         node = node->next;
     }
-} // copy constructor
-// usage:   SingleList<int> list2(list1);
+}
 
-template <typename T>
-SingleList<T>::SingleList(SingleList&& other)
+template <std::totally_ordered T>
+OrderedList<T>::OrderedList(OrderedList&& other)
     : head(nullptr), tail(nullptr), length(0) {
     this->head = other.head;
     this->tail = other.tail;
@@ -200,14 +197,13 @@ SingleList<T>::SingleList(SingleList&& other)
     other.head = nullptr;
     other.tail = nullptr;
     other.length = 0;
-} // move constructor NIEOBOWIAZKOWE
-// usage:   SingleList<int> list2(std::move(list1));
+}
 
-template <typename T>
-SingleList<T>& SingleList<T>::operator=(const SingleList& other) {
+template <std::totally_ordered T>
+OrderedList<T>& OrderedList<T>::operator=(const OrderedList& other) {
     if (this != &other) {
         // Added after 04-11-2025
-        this->clear(); // We have to free our memory
+        this->clear();
 
         OrderedNode<T>* copied_node = other.head;
         while (copied_node != nullptr) {
@@ -216,11 +212,10 @@ SingleList<T>& SingleList<T>::operator=(const SingleList& other) {
         }
     }
     return *this;
-} // copy assignment operator, return *this
-// usage:   list2 = list1;
+}
 
-template <typename T>
-SingleList<T>& SingleList<T>::operator=(SingleList<T>&& other) {
+template <std::totally_ordered T>
+OrderedList<T>& OrderedList<T>::operator=(OrderedList<T>&& other) {
     if (this != &other) {
         this->head = other.head;
         this->tail = other.tail;
@@ -230,26 +225,25 @@ SingleList<T>& SingleList<T>::operator=(SingleList<T>&& other) {
         other.length = 0;
     }
     return *this;
-} // move assignment operator, return *this
-// usage:   list2 = std::move(list1); NIEOBOWIAZKOWE
+}
 
-template <typename T>
-std::size_t SingleList<T>::size() const {
+template <std::totally_ordered T>
+std::size_t OrderedList<T>::size() const {
     return this->length;
 } // O(1) liczymy na bierzaco
 
-template <typename T>
-void SingleList<T>::push_front(T&& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::push_front(T&& item) {
     this->length += 1;
     if (!empty()) {
         head = new OrderedNode<T>(std::move(item), head);
     } else {
         head = tail = new OrderedNode<T>(std::move(item));
     }
-} // O(1), L.push_front(std::move(item)) NIEOBOWIAZKOWE
+}
 
-template <typename T>
-void SingleList<T>::push_back(T&& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::push_back(T&& item) {
     this->length += 1;
     if (!empty()) {
         tail->next = new OrderedNode<T>(std::move(item));
@@ -259,8 +253,8 @@ void SingleList<T>::push_back(T&& item) {
     }
 } // O(1), L.push_back(std::move(item)) NIEOBOWIAZKOWE
 
-template <typename T>
-void SingleList<T>::reverse() {
+template <std::totally_ordered T>
+void OrderedList<T>::reverse() {
     // No need for rotation;
     if (this->length < 2) {
         return;
@@ -280,8 +274,8 @@ void SingleList<T>::reverse() {
 } // O(n) NIEOBOWIAZKOWE
 
 // Operacje z indeksami. NIEOBOWIAZKOWE
-template <typename T>
-T& SingleList<T>::operator[](std::size_t pos) {
+template <std::totally_ordered T>
+T& OrderedList<T>::operator[](std::size_t pos) {
     if (this->length <= pos) {
         throw std::out_of_range("Trying to acces element out of range");
     }
@@ -292,8 +286,8 @@ T& SingleList<T>::operator[](std::size_t pos) {
     return node->value;
 } // podstawienie L[pos]=item, odczyt L[pos]
 
-template <typename T>
-const T& SingleList<T>::operator[](std::size_t pos) const {
+template <std::totally_ordered T>
+const T& OrderedList<T>::operator[](std::size_t pos) const {
     if (this->length <= pos) {
         throw std::out_of_range("Trying to acces element out of range");
     }
@@ -304,8 +298,8 @@ const T& SingleList<T>::operator[](std::size_t pos) const {
     return node->value;
 } // dostep do obiektu const
 
-template <typename T>
-void SingleList<T>::erase(std::size_t pos) {
+template <std::totally_ordered T>
+void OrderedList<T>::erase_pos(std::size_t pos) {
     if (this->length <= pos) {
         throw std::out_of_range("Trying to remove element out of range");
     }
@@ -330,8 +324,8 @@ void SingleList<T>::erase(std::size_t pos) {
     delete next_node;
 }
 
-template <typename T>
-int SingleList<T>::index(const T& item) {
+template <std::totally_ordered T>
+int OrderedList<T>::index(const T& item) {
     std::size_t node_index = 0;
     OrderedNode<T>* node = head;
     while (node != nullptr) {
@@ -344,8 +338,8 @@ int SingleList<T>::index(const T& item) {
     return -1;
 } // jaki index na liscie (-1 gdy nie ma) O(n)
 
-template <typename T>
-void SingleList<T>::insert(std::size_t pos, const T& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::insert(std::size_t pos, const T& item) {
     if (this->length < pos) {
         throw std::out_of_range("Trying to remove element out of range");
     }
@@ -369,10 +363,10 @@ void SingleList<T>::insert(std::size_t pos, const T& item) {
     node->next = new_node;
 } // inserts item before pos,
 
-template <typename T>
-void SingleList<T>::insert(std::size_t pos, T&& item) {
+template <std::totally_ordered T>
+void OrderedList<T>::insert(std::size_t pos, T&& item) {
     if (this->length < pos) {
-        throw std::out_of_range("Trying to remove element out of range");
+        throw std::out_of_range("Trying to insert element out of range");
     }
     if (pos == 0) {
         this->push_front(std::move(item));
@@ -394,8 +388,8 @@ void SingleList<T>::insert(std::size_t pos, T&& item) {
     node->next = new_node;
 } // inserts item before pos,
 
-template <typename T>
-bool SingleList<T>::operator==(const SingleList<T>& rhs) const {
+template <std::totally_ordered T>
+bool OrderedList<T>::operator==(const OrderedList<T>& rhs) const {
     // If lists dont have equal length we dont iterate over
     if (this->length != rhs.length) {
         return false;
@@ -415,5 +409,59 @@ bool SingleList<T>::operator==(const SingleList<T>& rhs) const {
     }
     return true;
 } // used for assertions if lists are equal
+
+template <std::totally_ordered T>
+size_t OrderedList<T>::find_first_bigger(const T& item) {
+    if (this->size() == 0) {
+        return 0;
+    }
+    size_t idx = 0;
+    OrderedNode<T>* node = this->head;
+    while (node != nullptr && node->value < item) {
+        idx++;
+        node = node->next;
+    }
+    return idx;
+}
+
+template <std::totally_ordered T>
+void OrderedList<T>::insert(const T& item) {
+    size_t idx = this->find_first_bigger(item);
+    this->insert(idx, item);
+}
+
+template <std::totally_ordered T>
+void OrderedList<T>::erase(const T& item) {
+    auto node = this->head;
+    size_t idx = 0;
+    while (node != nullptr) {
+        if (node->value == item) {
+            erase_pos(idx);
+            return;
+        } else if (node->value > item) {
+            return;
+        }
+        idx++;
+        node = node->next;
+    }
+}
+
+template <std::totally_ordered T>
+bool OrderedList<T>::contains(const T& item) const {
+    auto node = this->head;
+    while (node != nullptr) {
+        if (node->value == item) {
+            return true;
+        } else if (node->value > item) {
+            return false;
+        }
+        node = node->next;
+    }
+    return false;
+}
+template <std::totally_ordered T>
+OrderedNode<T>* OrderedList<T>::get_head() const {
+    return this->head;
+}
 
 #endif

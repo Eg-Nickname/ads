@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(Simple CXX)
+project(ListSet CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +14,6 @@ target_compile_options(tests PRIVATE
     -Wall          
     -Wextra            
     -Werror
-    # -O3            
+    -O3            
     -march=native
 )
