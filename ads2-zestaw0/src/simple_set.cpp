@@ -63,6 +63,22 @@ SimpleSet SimpleSet::intersection(const SimpleSet& other) const {
     return new_set;
 }
 
+SimpleSet SimpleSet::subtract(const SimpleSet& other) const {
+    if (this->inner_set.size() != other.inner_set.size()) {
+        return {};
+    }
+
+    std::size_t new_set_size = this->inner_set.size();
+    SimpleSet new_set(new_set_size);
+    new_set.inner_set = this->inner_set;
+    for (std::size_t i = 0; i < new_set_size; i++) {
+        if (other.inner_set[i] == 1) {
+            new_set.inner_set[i] = 0;
+        }
+    }
+    return new_set;
+}
+
 SimpleSet SimpleSet::symetric_diff(const SimpleSet& other) const {
     if (this->inner_set.size() != other.inner_set.size()) {
         return {};

@@ -1,3 +1,4 @@
+#include <bitset>
 #ifndef SIMPLE_SET_HPP
 #include <cstddef>
 #include <vector>
@@ -39,6 +40,9 @@ class SimpleSet {
 
     // Symetric diff
     SimpleSet symetric_diff(const SimpleSet& other) const;
+
+    // Subtract
+    SimpleSet subtract(const SimpleSet& other) const;
 
     // Identity cmp | O(n) - n size of Omega
     bool operator==(const SimpleSet& other) const;

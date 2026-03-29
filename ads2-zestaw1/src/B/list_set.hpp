@@ -7,6 +7,7 @@
 class ListSet {
     OrderedList<int32_t> inner_set;
     friend class LSTests;
+    friend void run_benchmarks();
 
     public:
     ListSet();

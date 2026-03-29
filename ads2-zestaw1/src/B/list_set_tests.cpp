@@ -201,6 +201,23 @@ class LSTests {
         s3.insert(12);
         assert(!s3.is_sub_set(s1));
     }
+
+    static void subtract_test() {
+        ListSet s1{};
+        s1.insert(1);
+        s1.insert(4);
+        s1.insert(8);
+
+        ListSet s2{};
+        s2.insert(1);
+        s2.insert(8);
+
+        ListSet s3{};
+        s3.insert(4);
+
+        auto s4 = s1.subtract(s2);
+        assert(s4 == s3);
+    }
 };
 
 auto main() -> int {
@@ -213,6 +230,7 @@ auto main() -> int {
     LSTests::Union_test();
     LSTests::intersection_test();
     LSTests::symetric_diff_test();
+    LSTests::subtract_test();
     LSTests::is_sub_set_test();
     std::cout << "All tests passed" << "\n";
     return 0;

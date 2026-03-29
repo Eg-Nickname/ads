@@ -5,7 +5,7 @@
 
 #include "simple_set.hpp"
 
-class LSTests {
+class SSTests {
     public:
     static SimpleSet gen_random_set(std::size_t N) {
         std::random_device rd;
@@ -206,16 +206,16 @@ class LSTests {
 };
 
 auto main() -> int {
-    LSTests::eq_test();
-    LSTests::size_test();
-    LSTests::assign_op_test();
-    LSTests::insert();
-    LSTests::remove();
-    LSTests::contains();
-    LSTests::Union_test();
-    LSTests::intersection_test();
-    LSTests::symetric_diff_test();
-    LSTests::is_sub_set_test();
+    SSTests::eq_test();
+    SSTests::size_test();
+    SSTests::assign_op_test();
+    SSTests::insert();
+    SSTests::remove();
+    SSTests::contains();
+    SSTests::Union_test();
+    SSTests::intersection_test();
+    SSTests::symetric_diff_test();
+    SSTests::is_sub_set_test();
 
     std::cout << "All tests passed" << "\n";
     return 0;
