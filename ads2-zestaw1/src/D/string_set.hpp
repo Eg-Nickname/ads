@@ -10,6 +10,7 @@ class StringSet {
     std::vector<std::string> ss;
 
     friend class StringSetTest;
+    friend void run_benchmarks();
 
     public:
     StringSet() {}
@@ -29,7 +30,7 @@ class StringSet {
     // Basic set operations
     void insert(std::string&& s) {
         if (!this->contains(s) || s.size() > 50) {
-            this->ss.push_back(s);
+            this->ss.emplace_back(s);
         }
     }
 

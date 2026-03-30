@@ -46,7 +46,7 @@ void run_benchmarks() {
             std::cout << "Cur set size " << s1.size() << std::endl;
             std::size_t idx = s1.size() * 2;
 
-            // --- O(1) Operations (recorded in ms) ---
+            // --- O(n) Operations (recorded in ms) ---
             auto start = Clock::now();
             s1.insert(idx);
             d_ins.push_back(
