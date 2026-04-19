@@ -1,4 +1,3 @@
-#include <exception>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -6,8 +5,11 @@
 
 #ifndef BINARY_PQ_HPP
 
+class BinaryPqTests;
+
 template <typename T, typename CMP>
 class BinaryPq {
+    friend BinaryPqTests;
     std::vector<T> heap{};
     CMP cmp_fn;
 

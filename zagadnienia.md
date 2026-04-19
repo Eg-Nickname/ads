@@ -1,7 +1,7 @@
 # Kolokwium 1 Zagadnienia
 
 - algorytmy zwiazane z kolejakami i zbiorami
-- listy łazon mogą sie pojawić
+- listy łaczone mogą sie pojawić
 - hashowanie w śmiesznej postaci (mod N)
 - hashowanie właściwe. Trzeba poczytac i się przygotować
 - dla kolejek zadania z kopcem binarnym
