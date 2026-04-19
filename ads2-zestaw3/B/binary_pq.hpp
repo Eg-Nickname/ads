@@ -25,6 +25,7 @@ class BinaryPq {
     }
 
     bool empty() { return this->heap.empty(); }
+    size_t size() { return this->heap.size(); }
 };
 
 template <typename T, typename CMP>

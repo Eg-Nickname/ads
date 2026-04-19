@@ -9,7 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # file(GLOB B_SOURCES "src/B/*.cpp")
 
 add_executable(A_TASK_TESTS "A/pq_tests.cpp")
+add_executable(A_TASK_BENCH "A/set_pq_bench.cpp")
 add_executable(B_TASK_TESTS "B/binary_pq_tests.cpp")
+add_executable(B_TASK_BENCH "B/binary_pq_bench.cpp")
+
 
 target_compile_options(A_TASK_TESTS PRIVATE
     -pedantic
@@ -20,7 +23,25 @@ target_compile_options(A_TASK_TESTS PRIVATE
     -march=native
 )
 
+target_compile_options(A_TASK_BENCH PRIVATE
+    -pedantic
+    -Wall          
+    -Wextra            
+    # -Werror
+    -O3            
+    -march=native
+)
+
 target_compile_options(B_TASK_TESTS PRIVATE
+    -pedantic
+    -Wall          
+    -Wextra            
+    # -Werror
+    -O3            
+    -march=native
+)
+
+target_compile_options(B_TASK_BENCH PRIVATE
     -pedantic
     -Wall          
     -Wextra            
