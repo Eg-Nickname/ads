@@ -55,8 +55,8 @@ SetHashed<N> SetHashed<N>::Union(const SetHashed& other) const {
     auto new_set = SetHashed<N>();
     for (size_t i = 0; i < N; i++) {
         // auto out = new_set.buckets[i];
-        auto l_set = this->buckets[i];
-        auto r_set = other.buckets[i];
+        auto& l_set = this->buckets[i];
+        auto& r_set = other.buckets[i];
         new_set.buckets[i] = l_set.Union(r_set);
     }
     return new_set;
@@ -66,8 +66,8 @@ template <size_t N>
 SetHashed<N> SetHashed<N>::intersection(const SetHashed& other) const {
     auto new_set = SetHashed<N>();
     for (size_t i = 0; i < N; i++) {
-        auto l_set = this->buckets[i];
-        auto r_set = other.buckets[i];
+        auto& l_set = this->buckets[i];
+        auto& r_set = other.buckets[i];
         new_set.buckets[i] = l_set.intersection(r_set);
     }
     return new_set;
@@ -78,8 +78,8 @@ SetHashed<N> SetHashed<N>::subtract(const SetHashed& other) const {
     auto new_set = SetHashed<N>();
     for (size_t i = 0; i < N; i++) {
         // auto& out = new_set.buckets[i];
-        auto l_set = this->buckets[i];
-        auto r_set = other.buckets[i];
+        auto& l_set = this->buckets[i];
+        auto& r_set = other.buckets[i];
         new_set.buckets[i] = l_set.subtract(r_set);
     }
     return new_set;

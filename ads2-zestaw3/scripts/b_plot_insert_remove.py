@@ -36,7 +36,7 @@ def save_plot(csv_file="binary_pq_benchmarks.csv"):
             color=colors[idx],
         )
 
-    plt.yscale("log")
+    # plt.yscale("log")
 
     plt.title("PQ Operations $O(LogN)$")
     plt.xlabel("PQ Size (N)")

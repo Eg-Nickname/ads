@@ -7,6 +7,7 @@
 void even_set_test() {
     auto even_set_map = [](size_t x) { return x / 2; };
     auto even_set_validate = [](size_t x) { return x % 2 == 0; };
+    auto inverse_fn = [](size_t x) { return x * 2; };
 
     CustomSet<uint32_t> even_set1(32, even_set_map, even_set_validate);
     CustomSet<uint32_t> even_set2(32, even_set_map, even_set_validate);
@@ -66,6 +67,7 @@ void even_set_test() {
 void odd_set_test() {
     auto odd_set_map = [](size_t x) { return x / 2; };
     auto odd_set_validate = [](size_t x) { return x % 2 == 1; };
+    auto inverse_fn = [](size_t x) { return x * 2 + 1; };
     CustomSet<uint32_t> odd_set(32, odd_set_map, odd_set_validate);
 
     CustomSet<uint32_t> odd_set1(32, odd_set_map, odd_set_validate);
@@ -126,6 +128,10 @@ void odd_set_test() {
 void char_set_test() {
     auto char_set_map = [](char c) { return static_cast<size_t>(c - 'a'); };
     auto char_set_validate = [](char c) { return c >= 'a' && c <= 'z'; };
+
+    auto inverse_char_set_map = [](int i) {
+        return static_cast<size_t>('a' + i);
+    };
 
     CustomSet<uint32_t> char_set1(26, char_set_map, char_set_validate);
     CustomSet<uint32_t> char_set2(26, char_set_map, char_set_validate);
@@ -188,6 +194,16 @@ void two_char_set_test() {
         char c0 = c[0] - 'a';
         char c1 = c[1] - 'a';
         return static_cast<size_t>(c0 * 26 + c1);
+    };
+
+    auto inverse_two_char_set_map = [](int i) {
+        char c1 = i % 26 + 'a';
+        char c0 = i / 26 + 'a';
+
+        std::string str = "";
+        str.push_back(c0);
+        str.push_back(c1);
+        return str;
     };
 
     auto two_char_set_validate = [](std::string c) {
